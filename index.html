@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 46 Practice Quiz 1</title>
+
+    <style>
+        /* --- CSS Variables & Themes --- */
+        :root {
+            --transition-speed: 0.3s;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            
+            /* Default Feedback Colors (Fallback for custom themes) */
+            --feedback-success-bg: #064e3b;
+            --feedback-success-border: #059669;
+            --feedback-success-text: #a7f3d0;
+            --feedback-error-bg: #7f1d1d;
+            --feedback-error-border: #dc2626;
+            --feedback-error-text: #fecaca;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #1e293b; --bg-card: #334155; --bg-header: #0f172a;
+            --text-main: #f1f5f9; --text-muted: #94a3b8; --text-accent: #38bdf8;
+            --border-color: #475569; --highlight-bg: #475569;
+            --button-bg: #38bdf8; --button-text: #0f172a; --button-hover: #0ea5e9;
+        }
+
+        [data-theme="light"] {
+            --bg-body: #f3f4f6; --bg-card: #ffffff; --bg-header: #ffffff;
+            --text-main: #1f2937; --text-muted: #6b7280; --text-accent: #2563eb;
+            --border-color: #e5e7eb; --highlight-bg: #f3f4f6;
+            --button-bg: #2563eb; --button-text: #ffffff; --button-hover: #1d4ed8;
+            --feedback-success-bg: #ecfdf5; --feedback-success-border: #34d399; --feedback-success-text: #065f46;
+            --feedback-error-bg: #fef2f2; --feedback-error-border: #f87171; --feedback-error-text: #991b1b;
+        }
+
+        [data-theme="midnight"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #e0e0e0; --text-muted: #888888; --text-accent: #90caf9;
+            --border-color: #333333; --highlight-bg: #1a1a1a;
+            --button-bg: #90caf9; --button-text: #000000; --button-hover: #42a5f5;
+            --feedback-success-bg: #051b11; --feedback-success-border: #0f5132; --feedback-success-text: #75b798;
+            --feedback-error-bg: #2c0b0e; --feedback-error-border: #842029; --feedback-error-text: #ea868f;
+        }
+
+        [data-theme="legacy-dark"] {
+            --bg-body: #2d343e; --bg-card: #3c424f; --bg-header: #3c424f;
+            --text-main: #e8e6e3; --text-muted: #b0c4de; --text-accent: #8ab4f8;
+            --border-color: #555; --highlight-bg: #454c5a;
+            --button-bg: #8ab4f8; --button-text: #202124; --button-hover: #a3c5f9;
+            --feedback-success-bg: #344e41; --feedback-success-border: #52b788; --feedback-success-text: #c7f9cc;
+            --feedback-error-bg: #5e2129; --feedback-error-border: #a4133c; --feedback-error-text: #f8d7da;
+        }
+
+        [data-theme="sepia"] {
+            --bg-body: #f4ecd8; --bg-card: #fdf6e3; --bg-header: #e4d5b7;
+            --text-main: #433422; --text-muted: #7c6f5a; --text-accent: #a05a2c;
+            --border-color: #d3c4a5; --highlight-bg: #ebe1c9;
+            --button-bg: #a05a2c; --button-text: #fdf6e3; --button-hover: #864822;
+            --feedback-success-bg: #e6f4ea; --feedback-success-border: #8ab893; --feedback-success-text: #2e4c35;
+            --feedback-error-bg: #f9e3e3; --feedback-error-border: #d48f8f; --feedback-error-text: #5c2b2b;
+        }
+
+        [data-theme="contrast"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #ffffff; --text-muted: #dddddd; --text-accent: #ffff00;
+            --border-color: #ffffff; --highlight-bg: #333333;
+            --button-bg: #ffff00; --button-text: #000000; --button-hover: #e6e600;
+            --feedback-success-bg: #000000; --feedback-success-border: #00ff00; --feedback-success-text: #00ff00;
+            --feedback-error-bg: #000000; --feedback-error-border: #ff0000; --feedback-error-text: #ff0000;
+        }
+
+        /* --- Global Reset & Layout --- */
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-main);
+            margin: 0;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            line-height: 1.6;
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--bg-header);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        header.unpinned { position: relative; box-shadow: none; }
+
+        .header-top {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; flex-wrap: wrap; gap: 15px;
+        }
+
+        header h1 { font-size: 1.5rem; margin: 0; color: var(--text-accent); font-weight: 700; }
+
+        .controls-wrapper { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+        /* --- Custom Theme Builder --- */
+        .custom-builder {
+            display: none; flex-wrap: wrap; gap: 15px;
+            background-color: var(--bg-card); padding: 10px 15px;
+            border-radius: 8px; border: 1px solid var(--border-color);
+            margin-top: 5px; font-size: 0.85rem; animation: fadeIn 0.3s;
+            width: 100%; justify-content: flex-end;
+        }
+        .custom-builder.active { display: flex; }
+        .color-picker-group { display: flex; align-items: center; gap: 8px; }
+        .color-picker-group input[type="color"] {
+            border: none; width: 25px; height: 25px; border-radius: 4px;
+            cursor: pointer; padding: 0; background: none;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Controls --- */
+        .header-btn {
+            background-color: var(--highlight-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-btn:hover {
+            border-color: var(--text-accent);
+            color: var(--text-accent);
+        }
+
+        .pin-btn {
+            background: none; border: 1px solid var(--border-color); color: var(--text-main);
+            cursor: pointer; padding: 0 10px; border-radius: 6px; font-size: 1rem;
+            transition: background-color 0.2s; height: 34px; display: flex;
+            align-items: center; justify-content: center;
+        }
+        .pin-btn:hover { background-color: var(--highlight-bg); }
+        .pin-btn.pin-active { background-color: rgba(0, 0, 0, 0.1); }
+
+        select#theme-select {
+            padding: 0 12px; border-radius: 6px; border: 1px solid var(--border-color);
+            background-color: var(--bg-card); color: var(--text-main);
+            cursor: pointer; font-family: inherit; height: 34px;
+        }
+
+        /* --- Section Navigation --- */
+        .section-nav { display: flex; gap: 10px; flex-wrap: wrap; }
+        .section-nav button {
+            background-color: var(--highlight-bg); color: var(--text-main);
+            border: 1px solid var(--border-color); padding: 6px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+            font-weight: 500; transition: all 0.2s;
+        }
+        .section-nav button:hover { border-color: var(--text-accent); color: var(--text-accent); }
+
+        /* --- Main Content --- */
+        .container {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 0 1rem 4rem 1rem;
+        }
+
+        .section-header {
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--text-accent);
+            color: var(--text-accent);
+            font-size: 1.5rem;
+            font-weight: 700;
+            scroll-margin-top: 150px; /* Offset for sticky header */
+        }
+
+        /* --- Question Card --- */
+        .question-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .lo-box {
+            background-color: var(--highlight-bg);
+            border-left: 4px solid var(--text-accent);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-style: italic;
+            display: none; /* Hidden by default */
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Options --- */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: var(--highlight-bg);
+            border-color: var(--text-muted);
+        }
+
+        .option-label input {
+            margin-top: 0.3rem;
+            margin-right: 1rem;
+            accent-color: var(--text-accent);
+            transform: scale(1.2);
+        }
+
+        /* --- Buttons --- */
+        .btn-check {
+            margin-top: 1.5rem;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-check:hover {
+            opacity: 0.9;
+        }
+
+        .btn-link {
+            display: inline-block;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-link:hover {
+            opacity: 0.9;
+        }
+
+        /* --- Feedback Area --- */
+        .feedback {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: none; /* Hidden by default */
+            border: 1px solid transparent;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            background-color: var(--feedback-success-bg);
+            border-color: var(--feedback-success-border);
+            color: var(--feedback-success-text);
+        }
+
+        .feedback.incorrect {
+            background-color: var(--feedback-error-bg);
+            border-color: var(--feedback-error-border);
+            color: var(--feedback-error-text);
+        }
+
+        .feedback-header {
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .rationale {
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .source {
+            display: block;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            font-style: italic;
+            border-top: 1px dashed currentColor;
+            padding-top: 0.5rem;
+        }
+
+        /* --- Mobile Tweaks --- */
+        @media (max-width: 768px) {
+            .header-top { flex-direction: column; align-items: flex-start; }
+            .controls-wrapper { width: 100%; justify-content: flex-start; }
+            .section-nav { justify-content: flex-start; }
+            .custom-builder { justify-content: flex-start; }
+            header h1 { font-size: 1.25rem; }
+            #reveal-all-container { justify-content: flex-start !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="main-header">
+        <div class="header-top">
+            <h1>Week 46 Practice Quiz 1</h1>
+            <div class="controls-wrapper">
+                
+                <!-- Reveal LOs Button -->
+                <button id="reveal-all-btn" class="header-btn" onclick="toggleAllLOs()">Show Learning Objectives</button>
+                
+                <!-- Pin Button -->
+                <button class="pin-btn pin-active" id="pin-btn" onclick="toggleHeader()" title="Pin/Unpin Header">📌</button>
+                
+                <!-- Theme Selector -->
+                <div class="theme-control">
+                    <select id="theme-select" onchange="changeTheme(this.value)">
+                        <option value="dark">Modern Dark</option>
+                        <option value="midnight">Midnight</option>
+                        <option value="light">Modern Light</option>
+                        <option value="legacy-dark">Legacy Dark</option>
+                        <option value="sepia">Sepia</option>
+                        <option value="contrast">High Contrast</option>
+                        <option value="custom">⚙️ Custom...</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Custom Theme Color Pickers -->
+            <div class="custom-builder" id="custom-builder">
+                <div class="color-picker-group">
+                    <label>Background:</label>
+                    <input type="color" id="color-bg" value="#1a1a2e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Cards:</label>
+                    <input type="color" id="color-card" value="#16213e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Text:</label>
+                    <input type="color" id="color-text" value="#e94560" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Accent:</label>
+                    <input type="color" id="color-accent" value="#0f3460" oninput="updateCustomTheme()">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dynamic Navigation Bar -->
+        <div class="section-nav" id="section-nav"></div>
+    </header>
+
+    <div class="container">
+        <div id="quiz-root">
+            <!-- Content injected via JS -->
+        </div>
+    </div>
+
+    <script>
+        // --- Data ---
+        const quizData = [
+            // --- Section 1: Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid ---
+            {
+                section: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid",
+                fullLO: "LO1: Describe the three mechanisms used by PTH to regulate serum calcium concentration and the importance of this regulation.",
+                question: "A 55-year-old woman is found to have asymptomatic hypocalcemia on routine blood work. In response to this low serum calcium concentration, her parathyroid glands secrete parathyroid hormone (PTH) to restore homeostasis. In the skeletal system, this hormone acts as a \"borrowing\" mechanism by directly inducing which of the following cellular changes?",
+                options: {
+                    A: "Decreasing the activity of osteocytes",
+                    B: "Increasing the release of calcitonin",
+                    C: "Increasing osteoclast numbers and activity",
+                    D: "Increasing the synthesis of collagen matrix",
+                    E: "Inhibiting the deposition of hydroxyapatite crystals"
+                },
+                correctAnswer: "C",
+                rationale: "PTH maintains blood calcium levels via three main mechanisms: increasing gut absorption (via vitamin D), decreasing renal excretion, and \"borrowing\" from the bone reservoir. In the bone, PTH mobilizes calcium by increasing the release from amorphous calcium compounds and increasing osteoclast numbers and activity (bone degradation).",
+                source: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid PDF, slide 13: '\"Borrow\" from the bone reservoir – PTH mobilizes calcium from bone (by increasing release from amorphous calcium compounds and increasing osteoclast numbers and activity)'"
+            },
+            {
+                section: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid",
+                fullLO: "LO1: Describe the three mechanisms used by PTH to regulate serum calcium concentration and the importance of this regulation.",
+                question: "A 60-year-old man with hypoparathyroidism requires continuous supplementation to maintain normal serum calcium levels. He is given a synthetic analog of parathyroid hormone (PTH). Within the gastrointestinal tract, this hormone enhances calcium uptake primarily by increasing the production of which of the following downstream mediators?",
+                options: {
+                    A: "Active Vitamin D",
+                    B: "Calcitonin",
+                    C: "Cortisol",
+                    D: "Inactive 25-hydroxyvitamin D3",
+                    E: "Phospholipase C"
+                },
+                correctAnswer: "A",
+                rationale: "To increase serum calcium, PTH acts to increase uptake/absorption in the gut by increasing the production of active Vitamin D. Vitamin D then functions through the Vitamin D receptor (VDR) to increase the expression of a calcium-binding protein in the gut.",
+                source: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid PDF, slide 13: 'Increase uptake/absorption – PTH increases production of active Vitamin D'"
+            },
+            {
+                section: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid",
+                fullLO: "LO2: Describe how PTH secretion is regulated and its effects when in excess or deficient.",
+                question: "A 45-year-old woman presents to the clinic with recurrent nephrolithiasis (kidney stones) and diffuse bone pain. A dual-energy x-ray absorptiometry (DEXA) scan reveals significantly reduced bone mineral density. Laboratory testing reveals a remarkably high serum calcium concentration and elevated parathyroid hormone levels. Her constellation of findings (osteitis fibrosa cystica and kidney stones) is most characteristic of which of the following conditions?",
+                options: {
+                    A: "Addison's disease",
+                    B: "Hyperparathyroidism",
+                    C: "Hypoparathyroidism",
+                    D: "Rickets",
+                    E: "Vitamin D deficiency"
+                },
+                correctAnswer: "B",
+                rationale: "Hyperparathyroidism results in high serum calcium concentration, decreased nerve and muscle excitability, kidney stones, and reduced bone mineral density leading to an increased risk of fracture (osteitis fibrosa cystica).",
+                source: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid PDF, slide 16: 'Hyperparathyroidism • High serum calcium concentration • Decreased nerve and muscle excitability • Kidney stones • Reduced bone mineral density and increased risk of fracture (osteitis fibrosa cystica)'"
+            },
+            {
+                section: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid",
+                fullLO: "LO2: Describe how PTH secretion is regulated and its effects when in excess or deficient.",
+                question: "A 35-year-old woman undergoes a total thyroidectomy for papillary thyroid carcinoma. On postoperative day two, she complains of tingling around her mouth and cramping in her hands. When the nurse inflates a blood pressure cuff on her arm, her wrist and fingers involuntarily flex into a spasm (Trousseau sign). Which of the following conditions is most likely responsible for this increased neuromuscular excitability?",
+                options: {
+                    A: "Hyperaldosteronism",
+                    B: "Hyperparathyroidism",
+                    C: "Hypoparathyroidism",
+                    D: "Pituitary apoplexy",
+                    E: "Thyrotoxicosis"
+                },
+                correctAnswer: "C",
+                rationale: "The patient is exhibiting carpopedal spasm (Trousseau sign), which is a classic manifestation of increased nerve and muscle excitability due to a low serum calcium concentration. Postoperative hypoparathyroidism is a common cause of this following thyroid surgery.",
+                source: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid PDF, slide 17: 'Hypoparathyroidism • Low serum calcium concentration • Increased nerve and muscle excitability carpopedal spasm... Trousseau sign'"
+            },
+            {
+                section: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid",
+                fullLO: "LO3: Identify key adrenal hormones and their effects on the body, including when they are in excess or deficient.",
+                question: "A 30-year-old man presents with progressive fatigue, weight loss, and dizziness upon standing. Physical examination reveals splotchy hyperpigmentation around his lips and on his buccal mucosa. Laboratory testing shows hypoglycemia and hypotension. He is diagnosed with an autoimmune condition that is actively destroying his adrenal cortex. The hyperpigmentation in this specific disease is directly caused by the excessive secretion of which of the following?",
+                options: {
+                    A: "Adrenocorticotropin (ACTH) and precursor fragments",
+                    B: "Aldosterone",
+                    C: "Cortisol",
+                    D: "Dehydroepiandrosterone (DHEA)",
+                    E: "Epinephrine"
+                },
+                correctAnswer: "A",
+                rationale: "The patient has Addison's disease (primary adrenal insufficiency). The lack of cortisol eliminates negative feedback, producing excess CRF and ACTH. ACTH arises from the POMC precursor protein, which also produces Melanocyte Stimulating Hormone (MSH). This excess stimulates melanin production, causing the characteristic hyperpigmentation.",
+                source: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid PDF, slides 27-28: 'Pigmentation disorders - The lack of cortisol produces excess CRF secretion. CRF also stimulates melanin production, resulting in splotchy pigmentation around areas of thin skin' AND 'ACTH (as well as other hormones like MSH...) arise from the POMC precursor protein'"
+            },
+            {
+                section: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid",
+                fullLO: "LO3: Identify key adrenal hormones and their effects on the body, including when they are in excess or deficient.",
+                question: "A 50-year-old woman with rheumatoid arthritis has been taking high-dose prednisone (a pharmacologic corticosteroid) for several years. She currently presents with central adiposity, a rounded \"moon\" face, a fat pad between her shoulder blades (\"buffalo hump\"), and purple striae on her abdomen. Which of the following best classifies her current endocrine disorder?",
+                options: {
+                    A: "Addison's disease",
+                    B: "Congenital adrenal hyperplasia",
+                    C: "Conn's syndrome",
+                    D: "Cushing's disease",
+                    E: "Cushing's syndrome"
+                },
+                correctAnswer: "E",
+                rationale: "Cushing's syndrome is associated with excess adrenal glucocorticoid. It is most commonly caused by the excess consumption of pharmacologic corticosteroids (like prednisone). \"Cushing's disease\" specifically refers to the secondary condition caused by a pituitary tumor secreting excess ACTH.",
+                source: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid PDF, slides 29-30: 'Cushing’s Syndrome is most commonly caused by excess consumption of pharmacologic corticosteroids... Symptoms include central adiposity, “moon face” (facial deposition of fat), ”buffalo hump”... and striae'"
+            },
+            {
+                section: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid",
+                fullLO: "LO3: Identify key adrenal hormones and their effects on the body, including when they are in excess or deficient.",
+                question: "A male infant is born with ambiguous genitalia and quickly develops life-threatening salt-wasting and hypotension. Genetic testing reveals a mutation in a steroidogenic enzyme, leading to a complete lack of cortisol and aldosterone, with a massive shunting of precursors into adrenal androgen synthesis. Which of the following enzymes is most likely deficient in this infant?",
+                options: {
+                    A: "11-beta-hydroxysteroid dehydrogenase (HSD11B2)",
+                    B: "17-alpha-hydroxylase (CYP17)",
+                    C: "21-hydroxylase (CYP21)",
+                    D: "Aromatase",
+                    E: "Phenylethanolamine N-methyltransferase (PNMT)"
+                },
+                correctAnswer: "C",
+                rationale: "Congenital Adrenal Hyperplasia (CAH) is most commonly caused by 21-hydroxylase deficiency. This prevents the synthesis of aldosterone and cortisol, leading to salt wasting and overproduction of androgens (virilization/precocious puberty).",
+                source: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid PDF, slide 34: 'Congenital Adrenal Hyperplasia (CAH) Most common cause is 21-hydroxylase deficiency. Symptoms of CAH: • Virilization or precocious puberty • Salt wasting'"
+            },
+            {
+                section: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid",
+                fullLO: "LO3: Identify key adrenal hormones and their effects on the body, including when they are in excess or deficient.",
+                question: "A 45-year-old man consumes extremely large quantities of black licorice daily. Licorice contains glycyrrhetinic acid, which is a potent inhibitor of the type 2 11-beta hydroxysteroid dehydrogenase (HSD11B2) enzyme. Inhibition of this specific enzyme will lead to the inappropriate activation of mineralocorticoid receptors in the kidney by which of the following circulating hormones?",
+                options: {
+                    A: "Aldosterone",
+                    B: "Cortisol",
+                    C: "Deoxycorticosterone",
+                    D: "Epinephrine",
+                    E: "Progesterone"
+                },
+                correctAnswer: "B",
+                rationale: "Cortisol circulates at roughly 1000x the concentration of aldosterone. To prevent cortisol from swamping the mineralocorticoid receptor (MR), aldosterone-responsive tissues express HSD11B2, which inactivates cortisol to cortisone. Licorice inhibits HSD11B2, allowing cortisol to inappropriately activate the MR.",
+                source: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid PDF, slides 41-43: 'Licorice contains glycyrrhetinic acid, an inhibitor of HSD11B2' AND 'HSD11B2 protects the mineralocorticoid receptor from cortisol... 2. Many aldosterone target tissues inactivate cortisol to cortisone with type 2 11b hydroxysteroid dehydrogenase'"
+            },
+            {
+                section: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid",
+                fullLO: "LO4: Understand the function of the adrenal medulla and its pathophysiology.",
+                question: "A 55-year-old man presents with episodic headaches, profound sweating, and severely elevated blood pressure. A 24-hour urine collection reveals highly elevated levels of metanephrines and vanillylmandelic acid (VMA). Imaging localizes a 4-cm tumor within the adrenal gland. This tumor is primarily composed of which of the following cell types?",
+                options: {
+                    A: "Chromaffin cells",
+                    B: "Lactotrophs",
+                    C: "Pituicytes",
+                    D: "Spongiform cells",
+                    E: "Zona fasciculata cells"
+                },
+                correctAnswer: "A",
+                rationale: "The patient has a pheochromocytoma, which is a catecholamine-producing tumor of the adrenal medulla. These tumors are composed of chromaffin cells.",
+                source: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid PDF, slide 50: 'CATECHOLAMINE EXCESS: PHEOCHROMOCYTOMA • Catecholamine-producing tumors composed of chromaffin cells • Causes hypertension and other signs/symptoms of catecholamine excess'"
+            },
+            {
+                section: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid",
+                fullLO: "LO4: Understand the function of the adrenal medulla and its pathophysiology.",
+                question: "A pharmacologist is studying the synthesis of catecholamines in the adrenal medulla. The final step of the pathway converts norepinephrine to epinephrine, which constitutes 80% of the medullary hormonal output. Which of the following enzymes catalyzes this specific final step and is highly regulated by local cortisol concentrations?",
+                options: {
+                    A: "Aromatic L-amino acid decarboxylase",
+                    B: "Dopamine beta-hydroxylase",
+                    C: "Phenylethanolamine-N-methyltransferase (PNMT)",
+                    D: "Tyrosine hydroxylase",
+                    E: "Tyrosine-3-monooxygenase"
+                },
+                correctAnswer: "C",
+                rationale: "Epinephrine is the major catecholamine produced in the medulla due to the presence of PNMT. PNMT converts norepinephrine to epinephrine and is regulated by cortisol.",
+                source: "Physiology of the Endocrine System: Adrenal, Thyroid and Parathyroid PDF, slides 46-47: 'Epinephrine is the major catecholamine produced in the medulla due to the presence of PNMT (which is regulated by cortisol)'"
+            },
+
+            // --- Section 2: Pathology of the Pituitary & Hypothalamus ---
+            {
+                section: "Pathology of the Pituitary & Hypothalamus",
+                fullLO: "LO1: Classification of lesions involving Pituitary (WHO, 2022), and hypothalamus.",
+                question: "A 45-year-old woman is found to have a 1.2-cm mass in the sella turcica during an MRI for chronic headaches. A biopsy is planned. Under the WHO 2022 classification of sellar and supra-sellar lesions, which of the following is the most accurate contemporary diagnostic terminology for a benign, adeno-hypophyseal neoplasm?",
+                options: {
+                    A: "Craniopharyngioma",
+                    B: "Hypophysitis",
+                    C: "Pituitary adenocarcinoma",
+                    D: "Pituitary Neuroendocrine Tumor (PitNET)",
+                    E: "Rathke cleft cyst"
+                },
+                correctAnswer: "D",
+                rationale: "The WHO 2022 classification classifies pituitary adenomas (adeno-hypophyseal lesions) under the new terminology of Pituitary Neuroendocrine Tumor (PitNET).",
+                source: "Pathology of the Pituitary & Hypothalamus PDF, slide 9: 'WHO Classification of sellar / supra-sellar lesions... Adeno-hypophyseal | Pituitary adenoma (PitNET*)'"
+            },
+            {
+                section: "Pathology of the Pituitary & Hypothalamus",
+                fullLO: "LO2: Identify & differentiate important pathologic features, clinico-pathologic correlation, and pathophysiology of: Pituitary hyperplasia",
+                question: "A 28-year-old woman in her third trimester of pregnancy undergoes an MRI for sudden, severe vision changes. The scan reveals a symmetrically enlarged pituitary gland without a discrete mass. She is diagnosed with physiologic pituitary hyperplasia. Which of the following cellular populations is predominantly responsible for this normal expansion during pregnancy?",
+                options: {
+                    A: "Corticotrophs",
+                    B: "Gonadotrophs",
+                    C: "Prolactin (PRL) cells",
+                    D: "Somatotrophs",
+                    E: "Thyrotrophs"
+                },
+                correctAnswer: "C",
+                rationale: "Physiologic pituitary hyperplasia commonly occurs during pregnancy. This expansion is mainly due to an increase in prolactin (PRL) secreting cells to prepare for lactation.",
+                source: "Pathology of the Pituitary & Hypothalamus PDF, slides 10 & 30: 'Pituitary hyperplasia • Etiology – Physiologic: Pregnancy' AND 'Pregnancy is associated with physiologic expansion (x2) of anterior pituitary (mainly PRL cells)'"
+            },
+            {
+                section: "Pathology of the Pituitary & Hypothalamus",
+                fullLO: "LO2: Identify & differentiate important pathologic features, clinico-pathologic correlation, and pathophysiology of: Prolactinoma",
+                question: "A 30-year-old pre-menopausal woman presents with a 6-month history of amenorrhea and bilateral galactorrhea. She takes no medications and her pregnancy test is negative. Serum prolactin is extremely elevated at 250 ng/mL. An MRI demonstrates a 6-mm mass in the anterior pituitary. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Craniopharyngioma",
+                    B: "Gonadotroph adenoma",
+                    C: "Physiologic hyperplasia",
+                    D: "Prolactinoma (Micro-adenoma)",
+                    E: "Stalk effect from a suprasellar meningioma"
+                },
+                correctAnswer: "D",
+                rationale: "Prolactinomas are the most common hyper-functioning adenomas. In pre-menopausal women, they commonly present as micro-adenomas (<10mm) and cause oligo/amenorrhea, galactorrhea, and infertility. A serum PRL >200 ng/ml is almost always diagnostic of a prolactinoma, distinguishing it from \"stalk effect\" elevations which are typically <200 ng/ml.",
+                source: "Pathology of the Pituitary & Hypothalamus PDF, slide 15: 'PRL adenoma (Prolactinoma) • Most common adenoma (40%) & hyper-functioning adenoma... Symptoms-specific: Oligo- or Amenorrhea... Galactorrhea... Diagnosis: 1. Serum PRL = >200 ng/ml'"
+            },
+            {
+                section: "Pathology of the Pituitary & Hypothalamus",
+                fullLO: "LO2: Identify & differentiate important pathologic features, clinico-pathologic correlation, and pathophysiology of: Growth hormone secreting adenoma",
+                question: "A 45-year-old man visits his physician complaining that his rings no longer fit and his shoe size has increased over the past year. Physical examination reveals a prominent jaw (prognathism), a deep voice, and coarse facial features. An MRI identifies a 1.5 cm pituitary mass. To most sensitively diagnose the suspected underlying hormonal excess, the physician should measure the serum level of which of the following?",
+                options: {
+                    A: "Adrenocorticotropic hormone (ACTH)",
+                    B: "Fasting serum glucose",
+                    C: "Insulin-like growth factor 1 (IGF-1)",
+                    D: "Random growth hormone (GH)",
+                    E: "Thyroid-stimulating hormone (TSH)"
+                },
+                correctAnswer: "C",
+                rationale: "The patient exhibits signs of acromegaly, caused by a Growth Hormone (GH) secreting adenoma. Because serum GH fluctuates widely throughout the day, measuring age-adjusted Insulin-like Growth Factor 1 (IGF-1), which has minimal daily fluctuations, is the most sensitive diagnostic test.",
+                source: "Pathology of the Pituitary & Hypothalamus PDF, slides 17-18: 'GH (somatotroph) adenomas... Acromegaly... Enlarged hands/feet... Enlarged head... Prognathism... Diagnosis: – Increased IGF-1 levels (age-adjusted) – Sensitive test (minimal daily fluctuations; so preferred over serum GH levels)'"
+            },
+            {
+                section: "Pathology of the Pituitary & Hypothalamus",
+                fullLO: "LO2: Identify & differentiate important pathologic features, clinico-pathologic correlation, and pathophysiology of: ACTH secreting adenoma",
+                question: "A 40-year-old woman presents with weight gain, easy bruising, and new-onset facial hair (hirsutism). Examination shows central obesity and purple abdominal striae. Laboratory testing reveals elevated serum cortisol and elevated plasma ACTH. Administration of high-dose (8 mg) dexamethasone successfully suppresses her serum cortisol levels. What is the most likely etiology of her Cushing syndrome?",
+                options: {
+                    A: "Adrenal tumor",
+                    B: "Ectopic ACTH production from a lung carcinoma",
+                    C: "Exogenous steroid administration",
+                    D: "Pituitary adenoma",
+                    E: "Thyroid carcinoma"
+                },
+                correctAnswer: "D",
+                rationale: "The patient has Cushing's disease caused by an ACTH-secreting pituitary adenoma. In the diagnostic pathway, pituitary adenomas are characterized by high plasma ACTH and suppression of cortisol by high-dose (8 mg) dexamethasone. In contrast, ectopic ACTH sources (like lung cancer) typically do not suppress with high-dose dexamethasone.",
+                source: "Pathology of the Pituitary & Hypothalamus PDF, slide 20: 'ACTH (corticotroph) adenoma... Identify source: Pituitary adenoma | High [ACTH] | Suppressed [High-dose DST]'"
+            },
+            {
+                section: "Pathology of the Pituitary & Hypothalamus",
+                fullLO: "LO2: Identify & differentiate important pathologic features, clinico-pathologic correlation, and pathophysiology of: Gonadotrophic adenoma",
+                question: "A 65-year-old man complains of progressive bilateral peripheral vision loss. Perimetry testing confirms bitemporal hemianopsia. Hormonal screening reveals no elevations in prolactin, growth hormone, cortisol, or thyroid hormones. MRI shows a 2.5-cm sellar mass compressing the optic chiasm. A biopsy reveals uniform polygonal cells with no markers of hormonal differentiation. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "ACTH secreting adenoma",
+                    B: "Craniopharyngioma",
+                    C: "Null-cell / Gonadotroph adenoma",
+                    D: "Prolactinoma",
+                    E: "Rathke cleft cyst"
+                },
+                correctAnswer: "C",
+                rationale: "Clinically non-functioning pituitary adenomas (such as null-cell or gonadotroph adenomas) are defined by the lack of excess hormone secretion. Because they are slow-growing and silent, they typically present as macro-adenomas causing mass effect, such as visual field deficits (bitemporal hemianopsia) or hypopituitarism.",
+                source: "Pathology of the Pituitary & Hypothalamus PDF, slide 22: 'Clinically Non-Functioning Pituitary adenomas (NFPA)... Null-cell adenoma (no markers of differentiation) or Gonadotroph adenoma... Presentation: Asymptomatic, Mass effect (visual deficits, hypopituitarism) Size: Macro-adenomas'"
+            },
+            {
+                section: "Pathology of the Pituitary & Hypothalamus",
+                fullLO: "LO2: Identify & differentiate important pathologic features, clinico-pathologic correlation, and pathophysiology of: Hypopituitarism – Apoplexy",
+                question: "A 50-year-old man with a known, untreated pituitary macro-adenoma suddenly develops an excruciating headache, profound nausea, and double vision (diplopia). Upon arrival at the emergency department, his consciousness becomes altered. A STAT head CT indicates an acute hemorrhage localized within the sellar mass. Which of the following is the most appropriate immediate medical treatment for this life-threatening condition?",
+                options: {
+                    A: "Cabergoline (Dopamine agonist)",
+                    B: "Intravenous fluids and Corticosteroids",
+                    C: "Intravenous Heparin",
+                    D: "Octreotide (Somatostatin agonist)",
+                    E: "Radioactive iodine therapy"
+                },
+                correctAnswer: "B",
+                rationale: "The patient is experiencing pituitary apoplexy, characterized by acute infarct or hemorrhage in a pituitary adenoma. This presents with sudden excruciating headache, diplopia, and altered consciousness. It is a medical emergency that requires immediate treatment with IV fluids and corticosteroids (followed by surgical decompression).",
+                source: "Pathology of the Pituitary & Hypothalamus PDF, slide 29: 'Hypopituitarism - Pituitary apoplexy... Acute infarct or hemorrhage in a pituitary adenoma... Headache (Sudden, excruciating) + Vomiting... Treatment: Medical emergency – I/v fluids, Corticosteroids'"
+            },
+            {
+                section: "Pathology of the Pituitary & Hypothalamus",
+                fullLO: "LO2: Identify & differentiate important pathologic features, clinico-pathologic correlation, and pathophysiology of: Hypopituitarism – Sheehan’s syndrome",
+                question: "A 32-year-old woman is evaluated in the clinic because she has been unable to produce breast milk for her infant. She gave birth three weeks ago. Her medical records indicate the delivery was severely complicated by massive postpartum hemorrhage and shock requiring multiple blood transfusions. She also reports severe fatigue and anorexia. Her failure of lactation is most likely due to which of the following pathological processes?",
+                options: {
+                    A: "Autoimmune lymphocytic infiltration of the pituitary stalk",
+                    B: "Congenital defect in the diaphragm sellae",
+                    C: "Enlargement of a prolactinoma",
+                    D: "Granulomatous destruction of the hypothalamus",
+                    E: "Ischemic necrosis of the normal anterior pituitary"
+                },
+                correctAnswer: "E",
+                rationale: "This presentation is classic for Sheehan's syndrome, which is ischemic necrosis of the normal anterior pituitary caused by severe post-partum hemorrhage and shock. The enlarged anterior pituitary of pregnancy is highly vulnerable to ischemia if perfusion is compromised. The most common early clinical sign is failure of lactation due to prolactin deficiency.",
+                source: "Pathology of the Pituitary & Hypothalamus PDF, slide 30: 'Hypopituitarism – Sheehan syndrome • Etiology: Ischemic necrosis of the normal anterior pituitary: – Due to severe post-partum hemorrhage & shock... Clinical: – Failure of lactation after delivery (Postpartum PRL deficiency)'"
+            },
+            {
+                section: "Pathology of the Pituitary & Hypothalamus",
+                fullLO: "LO2: Identify & differentiate important pathologic features, clinico-pathologic correlation, and pathophysiology of: Hypopituitarism – Hypophysitis.",
+                question: "A 35-year-old woman who is three months postpartum develops insidious onset of fatigue, weight loss, polyuria, and polydipsia. Laboratory evaluation confirms concurrent anterior and posterior hypopituitarism. MRI reveals an inflamed, thickened pituitary stalk without a discrete adenoma. The coexistence of anterior and posterior deficits strongly favors an inflammatory etiology over an adenoma. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Craniopharyngioma",
+                    B: "Empty sella syndrome",
+                    C: "Lymphocytic hypophysitis",
+                    D: "Nelson's syndrome",
+                    E: "Pituitary apoplexy"
+                },
+                correctAnswer: "C",
+                rationale: "Hypophysitis is an inflammatory process of the pituitary. Primary lymphocytic hypophysitis typically occurs in young females post-partum and is autoimmune. The coexistence of both anterior and posterior hypopituitarism (causing diabetes insipidus, indicated by polyuria/polydipsia) strongly favors inflammation over an adenoma.",
+                source: "Pathology of the Pituitary & Hypothalamus PDF, slide 32: 'Hypopituitarism – Hypophysitis... Inflammatory process affecting the pituitary gland and/or infundibulum; – Coexistence of both anterior and posterior hypo-pituitarism favors inflammation over adenoma. Primary | Lymphocytic hypophysitis (young females, post-partum, auto-immune)'"
+            },
+            {
+                section: "Pathology of the Pituitary & Hypothalamus",
+                fullLO: "LO2: Identify & differentiate important pathologic features, clinico-pathologic correlation, and pathophysiology of: Suprasellar / hypothalamic lesions – Craniopharyngioma",
+                question: "A 12-year-old boy presents with stunted growth and frequent headaches. Visual field testing demonstrates bitemporal hemianopsia. An MRI of the brain shows a large, cystic-solid, supra-sellar mass containing specks of calcification. The neurosurgeon suspects a tumor derived from the embryologic Rathke pouch. Histologic examination of this tumor is most likely to reveal which of the following pathognomonic features?",
+                options: {
+                    A: "Concentric psammoma bodies",
+                    B: "Diffuse sheets of small round blue cells",
+                    C: "Intracellular neurofibrillary tangles",
+                    D: "Peripheral palisading and stellate reticulum",
+                    E: "Uniform acidophilic polygonal cells"
+                },
+                correctAnswer: "D",
+                rationale: "The patient has a pediatric Adamantinomatous Craniopharyngioma (ACP). Derived from Rathke pouch, it commonly presents as a supra-sellar mass with cystic/solid components and calcifications. Histologically, ACP is characterized by benign squamous epithelium with peripheral palisading, stellate reticulum (vacuolated cytoplasm), cysts, and \"wet keratin\" flakes.",
+                source: "Pathology of the Pituitary & Hypothalamus PDF, slides 33-34: 'Craniopharyngioma... Derived from Rathke pouch. Age: bimodal – Most commonly pediatric... MRI: Location: Supra-sellar mass; Appearance: cystic-solid... calcifications' AND 'Pathology... Admantinomatous (ACP)... 2. Peripheral palisading 3. Stellate reticulum (vacuolated cytoplasm)'"
+            },
+            {
+                section: "Pathology of the Pituitary & Hypothalamus",
+                fullLO: "LO2: Identify & differentiate important pathologic features, clinico-pathologic correlation, and pathophysiology of: Posterior pituitary syndromes",
+                question: "A 60-year-old man with small cell lung carcinoma presents with confusion and generalized weakness. Physical examination reveals normal skin turgor and no peripheral edema. Laboratory testing demonstrates a markedly low serum sodium (120 mEq/L), low serum osmolality (<280 mOsm/kg), and a high urine osmolality. Which of the following posterior pituitary syndromes is most likely responsible for this patient's findings?",
+                options: {
+                    A: "Central Diabetes Insipidus",
+                    B: "Empty Sella Syndrome",
+                    C: "Nephrogenic Diabetes Insipidus",
+                    D: "Sheehan's syndrome",
+                    E: "Syndrome of inappropriate ADH (SIADH)"
+                },
+                correctAnswer: "E",
+                rationale: "Small cell lung carcinoma can cause paraneoplastic ectopic production of ADH, leading to SIADH. This syndrome is characterized by ADH excess, small urine output, high urine osmolality, low serum osmolality, and hyponatremia (low serum Na), without peripheral edema.",
+                source: "Pathology of the Pituitary & Hypothalamus PDF, slide 37: 'Posterior Pituitary Syndromes... Syndrome of inappropriate ADH (SIADH) | ADH excess | ... Urine Osmolality High ... Serum Osmolality Low ... Serum Na+ Low ... [No peripheral edema] ... Causes: Lung: Small cell lung carcinoma'"
+            },
+
+            // --- Section 3: Thyroid Disorders ---
+            {
+                section: "Thyroid Disorders",
+                fullLO: "LO1: Recognize how to use thyroid function tests to diagnose thyroid disorders",
+                question: "A 45-year-old woman presents with a 3-month history of fatigue, weight gain, and cold intolerance. Suspecting a thyroid disorder, her primary care physician decides to order a single screening laboratory test. Which of the following is considered the most sensitive biochemical test for the diagnosis of primary hypothyroidism and hyperthyroidism?",
+                options: {
+                    A: "Free T4 by Equilibrium Dialysis",
+                    B: "Resin uptake study (T3 RU)",
+                    C: "Serum Thyroid Stimulating Hormone (TSH)",
+                    D: "Total T3",
+                    E: "Total T4"
+                },
+                correctAnswer: "C",
+                rationale: "The Thyroid Stimulating Hormone (TSH) test is highly sensitive to minor changes in thyroid axis function, making it the most sensitive single screening test for both hypothyroidism and hyperthyroidism.",
+                source: "Thyroid Disorders PDF, slide 4: 'Thyroid Function Tests... TSH: This is the most sensitive test for hypothyroidism and hyperthyroidism'"
+            },
+            {
+                section: "Thyroid Disorders",
+                fullLO: "LO1: Recognize how to use thyroid function tests to diagnose thyroid disorders",
+                question: "A 28-year-old woman in her second trimester of pregnancy has her thyroid labs drawn. Her physician notes that her total circulating thyroxine (Total T4) is abnormally elevated. However, her TSH is strictly within normal limits and she has no clinical symptoms of hyperthyroidism. Which of the following best explains this elevated Total T4 measurement?",
+                options: {
+                    A: "Cross-reactivity with human chorionic gonadotropin (hCG)",
+                    B: "Decreased peripheral conversion of T4 to T3",
+                    C: "Development of an autonomous toxic adenoma",
+                    D: "Increased circulating thyroid binding proteins",
+                    E: "Increased iodine uptake by the fetal thyroid"
+                },
+                correctAnswer: "D",
+                rationale: "Total T4 measures both bound and free thyroxine. Conditions that increase circulating thyroid binding proteins (like the high estrogen state of pregnancy) will directly increase the measured Total T4 without causing clinical hyperthyroidism (as the free hormone remains normal).",
+                source: "Thyroid Disorders PDF, slide 4: 'Thyroid Function Tests | T4: Usually measured and reported as the total (bound and free) amount in a given sample. Changes in circulating thyroid binding proteins will change this measurement. Increased binding proteins will lead to increased total thyroxine'"
+            },
+            {
+                section: "Thyroid Disorders",
+                fullLO: "LO2: Recognize the different causes of thyrotoxicosis",
+                question: "A 35-year-old woman presents with anxiety, resting tremor, sweating, and palpitations. Her thyroid function tests show an undetectable TSH and elevated Free T4. A radioactive iodine (123I) uptake scan demonstrates diffusely increased, homogenous uptake throughout the entire thyroid gland. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Factitious thyrotoxicosis",
+                    B: "Grave's Disease",
+                    C: "Struma Ovarii",
+                    D: "Toxic Adenoma",
+                    E: "Toxic Multinodular Goiter"
+                },
+                correctAnswer: "B",
+                rationale: "Grave's disease classically presents with clinical thyrotoxicosis, suppressed TSH, and a radioactive iodine scan showing diffuse, homogeneously increased uptake across the gland. (Toxic multinodular goiter shows inhomogeneous uptake, and an adenoma shows isolated uptake).",
+                source: "Thyroid Disorders PDF, slide 12: 'Thyrotoxicosis | Radiological Studies • Diffuse increased homogenous uptake of radioactive iodine in Grave’s Disease'"
+            },
+            {
+                section: "Thyroid Disorders",
+                fullLO: "LO2: Recognize the different causes of thyrotoxicosis",
+                question: "A 26-year-old medical assistant presents to the clinic with severe heat intolerance, hyperactivity, and weight loss. Her heart rate is 115/min. Laboratory testing reveals an undetectable TSH and a high T4 level. However, a radioactive iodine scan demonstrates markedly decreased, absent uptake in the thyroid gland. A careful medical history reveals she has been taking unauthorized diet pills. Which of the following is the most likely cause of her presentation?",
+                options: {
+                    A: "Factitious thyrotoxicosis",
+                    B: "Grave's Disease",
+                    C: "Pituitary TSH-secreting adenoma",
+                    D: "Toxic Adenoma",
+                    E: "Toxic Multinodular Goiter"
+                },
+                correctAnswer: "A",
+                rationale: "The patient has thyrotoxicosis without hyperthyroidism (i.e., her thyroid gland itself is not overproducing hormone). She is taking exogenous thyroid hormone (factitious thyrotoxicosis). This completely suppresses TSH and results in a decreased or absent uptake on a radioactive iodine scan, as the thyroid gland is physiologically shut down.",
+                source: "Thyroid Disorders PDF, slides 8 & 12: 'Thyrotoxicosis Without Hyperthyroidism... Exogenous Thyroid Hormone | Factitious' AND 'Decreased radioactive iodine uptake with thyroiditis and factitious thyrotoxicosis'"
+            },
+            {
+                section: "Thyroid Disorders",
+                fullLO: "LO3: Recognize the different causes of hypothyroidism",
+                question: "A 55-year-old woman complains of tiredness, constipation, and hoarseness. Physical examination reveals a delayed relaxation phase of her deep tendon reflexes and a goiter. Laboratory tests show an elevated TSH and low free T4. She has a strong family history of autoimmune diseases. Which of the following is the most common primary cause of this patient's condition?",
+                options: {
+                    A: "Drug-induced suppression",
+                    B: "Hashimoto's disease",
+                    C: "Hypothalamic infiltration",
+                    D: "Pituitary adenoma",
+                    E: "Thyroid dysgenesis"
+                },
+                correctAnswer: "B",
+                rationale: "The patient has primary hypothyroidism (indicated by high TSH and low T4) with classical symptoms (tiredness, constipation, delayed DTRs). Hashimoto's disease (autoimmune thyroiditis) is a leading cause of primary hypothyroidism.",
+                source: "Thyroid Disorders PDF, slide 19: 'Hypothyroidism | Causes • Primary... Hashimoto’s'"
+            },
+            {
+                section: "Thyroid Disorders",
+                fullLO: "LO3: Recognize the different causes of hypothyroidism",
+                question: "A 40-year-old man presents with extreme fatigue, weight gain, and cold intolerance. Laboratory results demonstrate a markedly low T4 level and a low TSH level. An MRI reveals a large macroadenoma compressing the normal pituitary tissue. In the classification of hypothyroidism causes, this specific etiology is defined as:",
+                options: {
+                    A: "Factitious",
+                    B: "Primary",
+                    C: "Quaternary",
+                    D: "Secondary",
+                    E: "Tertiary"
+                },
+                correctAnswer: "D",
+                rationale: "Hypothyroidism caused by pituitary failure (e.g., due to a pituitary tumor or surgery) is classified as secondary hypothyroidism. The key lab finding differentiating it from primary hypothyroidism is a low (or inappropriately normal) TSH in the face of a low T4.",
+                source: "Thyroid Disorders PDF, slide 20: 'Hypothyroidism | Causes • Secondary | Pituitary Tumors | Pituitary Surgery'"
+            },
+            {
+                section: "Thyroid Disorders",
+                fullLO: "LO4: Recognize the pathway for evaluation of thyroid nodules",
+                question: "A 50-year-old woman is discovered to have a 1.5-cm palpable nodule in the right lobe of her thyroid during a routine physical exam. Following the standard diagnostic pathway for evaluating thyroid nodules, the physician orders an initial biochemical test. If the results show that her serum TSH is abnormally low, what is the most appropriate next step in evaluation?",
+                options: {
+                    A: "Excisional biopsy of the nodule",
+                    B: "Fine needle aspiration (FNA)",
+                    C: "Observation and repeat TSH in 6 months",
+                    D: "Radioiodine Scan",
+                    E: "Total thyroidectomy"
+                },
+                correctAnswer: "D",
+                rationale: "In the evaluation pathway for thyroid nodules, the first step is checking the serum TSH. If the TSH is low (suggesting the nodule may be autonomously functioning/hyperthyroid), the correct next step is a Radioiodine Scan to determine if the nodule is \"hot\" (functioning) or \"cold\" (non-functioning).",
+                source: "Thyroid Disorders PDF, slide 28: 'Thyroid Nodules | Serum TSH -> Low -> Radioiodine Scan -> Hot Nodule / Cold Nodule'"
+            },
+            {
+                section: "Thyroid Disorders",
+                fullLO: "LO4: Recognize the pathway for evaluation of thyroid nodules",
+                question: "A 45-year-old man presents with a newly discovered thyroid nodule. Laboratory evaluation reveals that his serum TSH is strictly within the normal range. Based on the established algorithm for thyroid nodule evaluation, which of the following is the most appropriate next step to assess the malignancy risk of this nodule?",
+                options: {
+                    A: "Empiric radioactive iodine ablation",
+                    B: "Fine Needle Aspiration",
+                    C: "Radioiodine Scan",
+                    D: "Routine monitoring with yearly physical exams",
+                    E: "Trial of exogenous thyroid hormone suppression"
+                },
+                correctAnswer: "B",
+                rationale: "When a thyroid nodule is found and the serum TSH is either Normal or Elevated, the concern is a non-functioning nodule with malignant potential. The direct next step in the algorithm is a Fine Needle Aspiration (FNA) to obtain tissue for cytology.",
+                source: "Thyroid Disorders PDF, slide 28: 'Thyroid Nodules | Serum TSH -> Normal or Elevated -> Fine Needle Aspiration'"
+            }
+        ];
+
+        // --- Core Logic ---
+        const quizRoot = document.getElementById('quiz-root');
+        const themeSelect = document.getElementById('theme-select');
+        const pinBtn = document.getElementById('pin-btn');
+        const mainHeader = document.getElementById('main-header');
+        const sectionNav = document.getElementById('section-nav');
+        const customBuilder = document.getElementById('custom-builder');
+        const rootElements = document.documentElement;
+
+        let isRevealed = false;
+
+        function toggleAllLOs() {
+            isRevealed = !isRevealed;
+            const btn = document.getElementById('reveal-all-btn');
+            btn.textContent = isRevealed ? "Hide Learning Objectives" : "Show Learning Objectives";
+            
+            document.querySelectorAll('.lo-box').forEach(box => {
+                box.style.display = isRevealed ? 'block' : 'none';
+            });
+        }
+
+        function initQuiz() {
+            let currentSection = "";
+            let sectionIndex = 0;
+            
+            quizData.forEach((item, index) => {
+                if (item.section !== currentSection) {
+                    currentSection = item.section;
+                    
+                    const sectionId = 'sec-' + sectionIndex;
+                    
+                    const sectionHeader = document.createElement('h2');
+                    sectionHeader.className = 'section-header';
+                    sectionHeader.id = sectionId;
+                    sectionHeader.textContent = currentSection;
+                    quizRoot.appendChild(sectionHeader);
+
+                    const navBtn = document.createElement('button');
+                    let btnText = currentSection;
+                    // Format navigation button text
+                    if (btnText.includes("Physiology of the Endocrine System")) btnText = "Endocrine Physio";
+                    if (btnText.includes("Pathology of the Pituitary")) btnText = "Pituitary & Hypothalamus Path";
+                    if (btnText.includes("Thyroid Disorders")) btnText = "Thyroid Disorders";
+                    
+                    navBtn.textContent = btnText;
+                    navBtn.onclick = () => {
+                        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+                    };
+                    sectionNav.appendChild(navBtn);
+
+                    sectionIndex++;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `q-card-${index}`;
+
+                const loBox = document.createElement('div');
+                loBox.className = 'lo-box';
+                loBox.id = `lo-${index}`;
+                loBox.innerHTML = item.fullLO;
+                card.appendChild(loBox);
+
+                const qText = document.createElement('div');
+                qText.className = 'question-text';
+                qText.innerHTML = `${index + 1}. ${item.question}`;
+                card.appendChild(qText);
+
+                const optionsGrid = document.createElement('div');
+                optionsGrid.className = 'options-grid';
+
+                for (const[key, value] of Object.entries(item.options)) {
+                    const label = document.createElement('label');
+                    label.className = 'option-label';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = key;
+
+                    const span = document.createElement('span');
+                    span.innerHTML = `${key}. ${value}`;
+
+                    label.appendChild(input);
+                    label.appendChild(span);
+                    optionsGrid.appendChild(label);
+                }
+                card.appendChild(optionsGrid);
+
+                const btn = document.createElement('button');
+                btn.className = 'btn-check';
+                btn.textContent = 'Check Answer';
+                btn.onclick = () => checkAnswer(index);
+                card.appendChild(btn);
+
+                const feedback = document.createElement('div');
+                feedback.className = 'feedback';
+                feedback.id = `feedback-${index}`;
+                card.appendChild(feedback);
+
+                quizRoot.appendChild(card);
+            });
+
+            const returnContainer = document.createElement('div');
+            returnContainer.style.textAlign = 'center';
+            returnContainer.style.marginTop = '2rem';
+            
+            const returnBtn = document.createElement('a');
+            returnBtn.href = 'https://ibecerramcg.github.io/GI-GU-ENDO-Practice-Quizzes/';
+            returnBtn.className = 'btn-link';
+            returnBtn.textContent = '← Return to Quiz Directory';
+            
+            returnContainer.appendChild(returnBtn);
+            quizRoot.appendChild(returnContainer);
+
+            const savedTheme = localStorage.getItem('quizTheme') || 'dark';
+            themeSelect.value = savedTheme;
+            changeTheme(savedTheme);
+
+            const savedPinState = localStorage.getItem('headerPinned');
+            toggleHeader(savedPinState !== 'false');
+        }
+
+        function checkAnswer(index) {
+            const selected = document.querySelector(`input[name="question-${index}"]:checked`);
+            const feedbackEl = document.getElementById(`feedback-${index}`);
+            const data = quizData[index];
+
+            if (!selected) {
+                alert("Please select an answer.");
+                return;
+            }
+
+            const isCorrect = selected.value === data.correctAnswer;
+            
+            let html = `<span class="feedback-header">${isCorrect ? "Correct!" : "Incorrect"}</span>`;
+            if (!isCorrect) {
+                html += `<div>The correct answer is <strong>${data.correctAnswer}</strong>.</div>`;
+            }
+            
+            html += `<div class="rationale"><strong>Rationale:</strong> ${data.rationale}</div>`;
+            html += `<div class="source"><strong>Source:</strong> ${data.source}</div>`;
+
+            feedbackEl.innerHTML = html;
+            feedbackEl.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedbackEl.style.display = 'block';
+        }
+
+        function changeTheme(themeName) {
+            localStorage.setItem('quizTheme', themeName);
+            
+            if (themeName === 'custom') {
+                rootElements.removeAttribute('data-theme');
+                customBuilder.classList.add('active');
+                loadCustomTheme();
+            } else {
+                rootElements.setAttribute('data-theme', themeName);
+                customBuilder.classList.remove('active');
+                rootElements.removeAttribute('style');
+            }
+        }
+
+        function updateCustomTheme() {
+            const bg = document.getElementById('color-bg').value;
+            const card = document.getElementById('color-card').value;
+            const text = document.getElementById('color-text').value;
+            const accent = document.getElementById('color-accent').value;
+
+            rootElements.style.setProperty('--bg-body', bg);
+            rootElements.style.setProperty('--bg-header', bg);
+            rootElements.style.setProperty('--bg-card', card);
+            rootElements.style.setProperty('--highlight-bg', card);
+            rootElements.style.setProperty('--text-main', text);
+            rootElements.style.setProperty('--text-accent', accent);
+            rootElements.style.setProperty('--button-bg', accent);
+            rootElements.style.setProperty('--button-text', bg);
+            rootElements.style.setProperty('--border-color', accent + '40');
+
+            const customColors = { bg, card, text, accent };
+            localStorage.setItem('customThemeColors', JSON.stringify(customColors));
+        }
+
+        function loadCustomTheme() {
+            const savedColors = JSON.parse(localStorage.getItem('customThemeColors'));
+            if (savedColors) {
+                document.getElementById('color-bg').value = savedColors.bg;
+                document.getElementById('color-card').value = savedColors.card;
+                document.getElementById('color-text').value = savedColors.text;
+                document.getElementById('color-accent').value = savedColors.accent;
+                updateCustomTheme();
+            } else {
+                updateCustomTheme();
+            }
+        }
+
+        function toggleHeader(forceState) {
+            const isCurrentlyPinned = !mainHeader.classList.contains('unpinned');
+            const newState = (typeof forceState === 'boolean') ? forceState : !isCurrentlyPinned;
+
+            if (newState) {
+                mainHeader.classList.remove('unpinned');
+                pinBtn.classList.add('pin-active');
+                localStorage.setItem('headerPinned', 'true');
+            } else {
+                mainHeader.classList.add('unpinned');
+                pinBtn.classList.remove('pin-active');
+                localStorage.setItem('headerPinned', 'false');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initQuiz);
+
+    </script>
+</body>
+</html>
